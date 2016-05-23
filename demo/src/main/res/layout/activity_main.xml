@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.gmail.tylerfilla.widget.panview.demo.MainActivity"
     style="@style/Activity.Main.Root">
+
+    <com.gmail.tylerfilla.widget.panview.PanView
+        android:id="@+id/activityMainPanView"
+        style="@style/Activity.Main.PanView">
+
+    </com.gmail.tylerfilla.widget.panview.PanView>
 
 </RelativeLayout>
