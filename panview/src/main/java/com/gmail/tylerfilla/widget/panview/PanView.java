@@ -299,38 +299,30 @@ public class PanView extends FrameLayout {
         scrollViewY.scrollTo(scrollViewY.getScrollX(), y);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void smoothPanTo(int x, int y) {
-        // If we should use native smooth scrolling
-        if (useNativeSmoothScroll) {
+        // If we should use native smooth scrolling (or need to)
+        if (useNativeSmoothScroll || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Scroll natively
             scrollViewX.smoothScrollTo(x, scrollViewX.getScrollY());
             scrollViewY.smoothScrollTo(scrollViewY.getScrollX(), y);
         } else {
-            // Check if version is post-Honeycomb before continuing
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                // Use object animators for optional nicer scrolling
-                ObjectAnimator animScrollX = ObjectAnimator.ofInt(scrollViewX, "scrollX", x);
-                ObjectAnimator animScrollY = ObjectAnimator.ofInt(scrollViewY, "scrollY", y);
+            // Use object animators for optional nicer scrolling
+            ObjectAnimator animScrollX = ObjectAnimator.ofInt(scrollViewX, "scrollX", x);
+            ObjectAnimator animScrollY = ObjectAnimator.ofInt(scrollViewY, "scrollY", y);
 
-                // Use support library fast-out-slow-in interpolator (should be default, but configurable)
-                animScrollX.setInterpolator(new FastOutSlowInInterpolator());
-                animScrollY.setInterpolator(new FastOutSlowInInterpolator());
+            // Use support library fast-out-slow-in interpolator (should be default, but configurable)
+            animScrollX.setInterpolator(new FastOutSlowInInterpolator());
+            animScrollY.setInterpolator(new FastOutSlowInInterpolator());
 
-                // Use predefined "medium" animation time (should be default, but configurable)
-                int duration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-                animScrollX.setDuration(duration);
-                animScrollY.setDuration(duration);
+            // Use predefined "medium" animation time (should be default, but configurable)
+            int duration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+            animScrollX.setDuration(duration);
+            animScrollY.setDuration(duration);
 
-                // Start smooth scroll
-                animScrollX.start();
-                animScrollY.start();
-            } else {
-                // Enable native smooth scrolling
-                useNativeSmoothScroll = true;
-
-                // Try again
-                smoothPanTo(x, y);
-            }
+            // Start smooth scroll
+            animScrollX.start();
+            animScrollY.start();
         }
     }
 
@@ -371,7 +363,7 @@ public class PanView extends FrameLayout {
         scrollViewX.addView(scrollViewY);
         addView(scrollViewX);
 
-        // Add scrollbar view
+        // Add scrollbar lens
         addView(scrollbarLens);
     }
 
