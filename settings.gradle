@@ -1,1 +1,1 @@
-include ':panview'
+include ':panview', ':demo'
