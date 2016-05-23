@@ -375,18 +375,6 @@ public class PanView extends FrameLayout {
         addView(scrollbarLens);
     }
 
-    public interface OnPanChangeListener {
-
-        void onPanChange(int l, int t, int oldl, int oldt);
-
-    }
-
-    public interface OnPanStopListener {
-
-        void onPanStop();
-
-    }
-
     private class ScrollbarLens extends ScrollView {
 
         public ScrollbarLens(Context context) {
