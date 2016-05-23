@@ -19,7 +19,7 @@ import java.util.TimerTask;
 
 public class PanView extends FrameLayout {
 
-    private static final long SCROLL_CHANGE_EXPIRATION = 200000000l;
+    private static final long SCROLL_CHANGE_EXPIRATION = 200000000L;
 
     private static final boolean DEF_FILL_VIEWPORT_HEIGHT = false;
     private static final boolean DEF_FILL_VIEWPORT_WIDTH = false;
@@ -47,8 +47,6 @@ public class PanView extends FrameLayout {
 
     private OnPanChangeListener panChangeListener;
     private OnPanStopListener panStopListener;
-
-    private Timer timerWatchThing;
 
     public PanView(Context context) {
         super(context);
@@ -176,8 +174,8 @@ public class PanView extends FrameLayout {
 
         useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
 
-        timerWatchThing = new Timer();
-        timerWatchThing.scheduleAtFixedRate(new TimerTask() {
+        // Schedule scroll expiration checks (a bit hacky, but this whole thing is, too...)
+        new Timer().scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
@@ -222,7 +220,7 @@ public class PanView extends FrameLayout {
                 }
             }
 
-        }, 0l, 200l);
+        }, 0L, 200L);
     }
 
     private void handleAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
