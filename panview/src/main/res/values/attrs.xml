@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PanView">
+
+        <attr name="fillViewportHeight" format="boolean" />
+        <attr name="fillViewportWidth" format="boolean" />
+
+        <attr name="useNativeSmoothScroll" format="boolean" />
+
+    </declare-styleable>
+
+</resources>
