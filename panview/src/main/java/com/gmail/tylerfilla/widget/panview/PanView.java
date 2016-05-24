@@ -99,9 +99,6 @@ public class PanView extends FrameLayout {
 
             @Override
             public boolean onTouchEvent(MotionEvent event) {
-                // Awaken scrollbars
-                scrollbarLens.awakenScrollBars();
-
                 // Send event to super for scroll behavior
                 super.onTouchEvent(event);
 
@@ -137,15 +134,18 @@ public class PanView extends FrameLayout {
                 }
             }
 
+            @Override
+            protected boolean awakenScrollBars() {
+                scrollbarLens.awakenScrollBars();
+                return super.awakenScrollBars();
+            }
+
         };
 
         scrollViewY = new ScrollView(getContext()) {
 
             @Override
             public boolean onInterceptTouchEvent(MotionEvent event) {
-                // Awaken scrollbars
-                scrollbarLens.awakenScrollBars();
-
                 // If scroll has expired
                 if (System.nanoTime() - timeLastScrollChangeY > SCROLL_CHANGE_EXPIRATION) {
                     isScrollingY = false;
@@ -234,6 +234,12 @@ public class PanView extends FrameLayout {
 
                 // Update child layout parameters after restoring
                 child.setLayoutParams(layoutParams);
+            }
+
+            @Override
+            protected boolean awakenScrollBars() {
+                scrollbarLens.awakenScrollBars();
+                return super.awakenScrollBars();
             }
 
         };
