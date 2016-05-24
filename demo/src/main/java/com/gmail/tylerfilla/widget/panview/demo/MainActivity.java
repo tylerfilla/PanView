@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.gmail.tylerfilla.widget.panview.PanView;
+
 public class MainActivity extends AppCompatActivity {
 
+    private PanView panView;
     private TextView sampleText;
     private SwitchCompat wordWrapSwitch;
 
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Get stuff
+        panView = (PanView) findViewById(R.id.panView);
         sampleText = (TextView) findViewById(R.id.sampleText);
         wordWrapSwitch = (SwitchCompat) findViewById(R.id.wordWrapSwitch);
 
@@ -42,10 +46,9 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup.LayoutParams layoutParams = sampleText.getLayoutParams();
 
         if (wordWrap) {
-            // Matching parent width wraps text at screen edge
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         } else {
-            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.width = 2 * panView.getWidth();
         }
 
         sampleText.setLayoutParams(layoutParams);

@@ -20,14 +20,18 @@
 
     <style name="Activity.Main.SampleText" parent="">
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Activity.Main.ControlPanel" parent="">
+        <item name="android:background">#1F000000</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">0</item>
         <item name="android:orientation">vertical</item>
+        <item name="android:padding">16dp</item>
     </style>
 
     <style name="Activity.Main.ControlPanelEntry" parent="">
@@ -37,6 +41,7 @@
     </style>
 
     <style name="Activity.Main.WordWrapSwitch" parent="">
+        <item name="android:checked">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
