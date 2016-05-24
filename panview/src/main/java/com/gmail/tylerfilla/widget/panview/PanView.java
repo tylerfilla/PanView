@@ -165,6 +165,64 @@ public class PanView extends FrameLayout {
                 oldScrollY = t;
             }
 
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                // Get child
+                View child = getChildAt(0);
+
+                // Sanity check
+                if (child == null) {
+                    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                }
+
+                // Get child layout parameters
+                MarginLayoutParams layoutParams = (MarginLayoutParams) child.getLayoutParams();
+
+                // Flags determining alteration state of width and height params
+                boolean setWidth = false;
+                boolean setHeight = false;
+
+                // If width is set to match parent
+                if (layoutParams.width == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    // Modify width to 'redirect' parenthood to root PanView
+                    layoutParams.width = PanView.this.getMeasuredWidth();
+
+                    // Set width alteration flag
+                    setWidth = true;
+                }
+
+                // If height is set to match parent
+                if (layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    // Modify height to 'redirect' parenthood to root PanView
+                    layoutParams.height = PanView.this.getMeasuredHeight();
+
+                    // Set height alteration flag
+                    setHeight = true;
+                }
+
+                // If either width or height was altered
+                if (setWidth || setHeight) {
+                    // Update child layout parameters prior to measuring
+                    child.setLayoutParams(layoutParams);
+                }
+
+                // Measure like normal
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+                // Restore original width if altered
+                if (setWidth) {
+                    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                }
+
+                // Restore original height if altered
+                if (setHeight) {
+                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                }
+
+                // Update child layout parameters after restoring
+                child.setLayoutParams(layoutParams);
+            }
+
         };
 
         scrollbarLens = new ScrollbarLens(getContext());
