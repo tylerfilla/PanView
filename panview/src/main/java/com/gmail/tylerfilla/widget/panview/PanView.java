@@ -364,10 +364,6 @@ public class PanView extends FrameLayout {
     }
 
     private void configure() {
-        // Transfer scrollbar attributes to scrollbar lens
-        setHorizontalScrollBarEnabled(super.isHorizontalScrollBarEnabled());
-        setVerticalScrollBarEnabled(super.isVerticalScrollBarEnabled());
-
         // Fill viewport for each axis
         scrollViewX.setFillViewport(fillViewportWidth);
         scrollViewY.setFillViewport(fillViewportHeight);
@@ -663,15 +659,8 @@ public class PanView extends FrameLayout {
         private ScrollbarLens(Context context) {
             super(context);
 
-            // Expand to whatever we're in
-            setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
             // Use a transparent background, lest we forfeit our lensiness
             setBackgroundColor(0);
-
-            // Enable both scrollbars
-            setHorizontalScrollBarEnabled(true);
-            setVerticalScrollBarEnabled(true);
         }
 
         @Override
