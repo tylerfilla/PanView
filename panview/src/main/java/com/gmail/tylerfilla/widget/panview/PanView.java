@@ -418,6 +418,16 @@ public class PanView extends FrameLayout {
     }
 
     @Override
+    public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
+        scrollbarLens.setHorizontalScrollBarEnabled(horizontalScrollBarEnabled);
+    }
+
+    @Override
+    public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
+        scrollbarLens.setVerticalScrollBarEnabled(verticalScrollBarEnabled);
+    }
+
+    @Override
     public void addView(View child) {
         // Current child count
         int count;
