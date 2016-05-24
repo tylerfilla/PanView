@@ -286,19 +286,47 @@ public class PanView extends FrameLayout {
     }
 
     private void handleAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        // Get styled attributes array
-        TypedArray styledAttrs = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PanView, defStyleAttr, defStyleRes);
+        int[] internalStyleable_View = null;
+        int internalStyleable_View_scrollbars = -1;
 
-        fillViewportHeight = styledAttrs.getBoolean(R.styleable.PanView_fillViewportHeight, fillViewportHeight);
-        fillViewportWidth = styledAttrs.getBoolean(R.styleable.PanView_fillViewportWidth, fillViewportWidth);
+        try {
+            // Get private "styleable" from android.R
+            Class internalStyleable = Class.forName("android.R$styleable");
 
-        useNativeSmoothScroll = styledAttrs.getBoolean(R.styleable.PanView_useNativeSmoothScroll, useNativeSmoothScroll);
+            internalStyleable_View = (int[]) internalStyleable.getDeclaredField("View").get(null);
+            internalStyleable_View_scrollbars = internalStyleable.getDeclaredField("View_scrollbars").getInt(null);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
-        // Recycle styled attributes array
-        styledAttrs.recycle();
+        // Get styled attributes array for View
+        TypedArray styledAttrsView = getContext().getTheme().obtainStyledAttributes(attrs, internalStyleable_View, defStyleAttr, defStyleRes);
+
+        int scrollbars = styledAttrsView.getInteger(internalStyleable_View_scrollbars, -1);
+        System.out.println(scrollbars);
+
+        styledAttrsView.recycle();
+
+        // Get styled attributes array for PanView
+        TypedArray styledAttrsPanView = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PanView, defStyleAttr, defStyleRes);
+
+        fillViewportHeight = styledAttrsPanView.getBoolean(R.styleable.PanView_fillViewportHeight, fillViewportHeight);
+        fillViewportWidth = styledAttrsPanView.getBoolean(R.styleable.PanView_fillViewportWidth, fillViewportWidth);
+
+        useNativeSmoothScroll = styledAttrsPanView.getBoolean(R.styleable.PanView_useNativeSmoothScroll, useNativeSmoothScroll);
+
+        styledAttrsPanView.recycle();
     }
 
     private void configure() {
+        // Transfer scrollbar attributes to scrollbar lens
+        setHorizontalScrollBarEnabled(super.isHorizontalScrollBarEnabled());
+        setVerticalScrollBarEnabled(super.isVerticalScrollBarEnabled());
+
         // Fill viewport for each axis
         scrollViewX.setFillViewport(fillViewportWidth);
         scrollViewY.setFillViewport(fillViewportHeight);
