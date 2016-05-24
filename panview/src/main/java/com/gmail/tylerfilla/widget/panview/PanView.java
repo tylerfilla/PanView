@@ -116,13 +116,13 @@ public class PanView extends FrameLayout {
                 // Tell the scrollbar view to redraw
                 scrollbarLens.postInvalidate();
 
+                // Store value for later use elsewhere
+                oldScrollX = l;
+
                 // Notify listener
                 if (panChangeListener != null) {
                     panChangeListener.onPanChanged(l, scrollViewY.getScrollY(), oldl, oldScrollY);
                 }
-
-                // Store value for later use elsewhere
-                oldScrollX = l;
             }
 
         };
@@ -156,13 +156,13 @@ public class PanView extends FrameLayout {
                 // Tell the scrollbar view to redraw
                 scrollbarLens.postInvalidate();
 
+                // Store value for later use elsewhere
+                oldScrollY = t;
+
                 // Notify listener
                 if (panChangeListener != null) {
                     panChangeListener.onPanChanged(scrollViewX.getScrollX(), t, oldScrollX, oldt);
                 }
-
-                // Store value for later use elsewhere
-                oldScrollY = t;
             }
 
             @Override
