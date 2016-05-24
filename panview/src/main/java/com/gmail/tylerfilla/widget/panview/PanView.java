@@ -286,15 +286,51 @@ public class PanView extends FrameLayout {
     }
 
     private void handleAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        int[] internalStyleable_View = null;
-        int internalStyleable_View_scrollbars = -1;
+        // Array of internal attributes specific to View
+        int[] internalStyleableView = null;
+
+        // Indices of relevant attributes in the above array
+        int internalStyleableView_fadeScrollbars = -1;
+        int internalStyleableView_scrollX = -1;
+        int internalStyleableView_scrollY = -1;
+        int internalStyleableView_scrollbarAlwaysDrawHorizontalTrack = -1;
+        int internalStyleableView_scrollbarAlwaysDrawVerticalTrack = -1;
+        int internalStyleableView_scrollbarDefaultDelayBeforeFade = -1;
+        int internalStyleableView_scrollbarFadeDuration = -1;
+        int internalStyleableView_scrollbarSize = -1;
+        int internalStyleableView_scrollbarStyle = -1;
+        int internalStyleableView_scrollbarThumbHorizontal = -1;
+        int internalStyleableView_scrollbarThumbVertical = -1;
+        int internalStyleableView_scrollbarTrackHorizontal = -1;
+        int internalStyleableView_scrollbarTrackVertical = -1;
+        int internalStyleableView_scrollbars = -1;
+
+        // Flag indicating success of extraction of above information
+        boolean internalStyleableViewExtracted = false;
 
         try {
             // Get private "styleable" from android.R
             Class internalStyleable = Class.forName("android.R$styleable");
 
-            internalStyleable_View = (int[]) internalStyleable.getDeclaredField("View").get(null);
-            internalStyleable_View_scrollbars = internalStyleable.getDeclaredField("View_scrollbars").getInt(null);
+            // Extract relevant data from android.R.styleable
+            internalStyleableView = (int[]) internalStyleable.getDeclaredField("View").get(null);
+            internalStyleableView_fadeScrollbars = internalStyleable.getDeclaredField("View_fadeScrollbars").getInt(null);
+            internalStyleableView_scrollX = internalStyleable.getDeclaredField("View_scrollX").getInt(null);
+            internalStyleableView_scrollY = internalStyleable.getDeclaredField("View_scrollY").getInt(null);
+            internalStyleableView_scrollbarAlwaysDrawHorizontalTrack = internalStyleable.getDeclaredField("View_scrollbarAlwaysDrawHorizontalTrack").getInt(null);
+            internalStyleableView_scrollbarAlwaysDrawVerticalTrack = internalStyleable.getDeclaredField("View_scrollbarAlwaysDrawVerticalTrack").getInt(null);
+            internalStyleableView_scrollbarDefaultDelayBeforeFade = internalStyleable.getDeclaredField("View_scrollbarDefaultDelayBeforeFade").getInt(null);
+            internalStyleableView_scrollbarFadeDuration = internalStyleable.getDeclaredField("View_scrollbarFadeDuration").getInt(null);
+            internalStyleableView_scrollbarSize = internalStyleable.getDeclaredField("View_scrollbarSize").getInt(null);
+            internalStyleableView_scrollbarStyle = internalStyleable.getDeclaredField("View_scrollbarStyle").getInt(null);
+            internalStyleableView_scrollbarThumbHorizontal = internalStyleable.getDeclaredField("View_scrollbarThumbHorizontal").getInt(null);
+            internalStyleableView_scrollbarThumbVertical = internalStyleable.getDeclaredField("View_scrollbarThumbVertical").getInt(null);
+            internalStyleableView_scrollbarTrackHorizontal = internalStyleable.getDeclaredField("View_scrollbarTrackHorizontal").getInt(null);
+            internalStyleableView_scrollbarTrackVertical = internalStyleable.getDeclaredField("View_scrollbarTrackVertical").getInt(null);
+            internalStyleableView_scrollbars = internalStyleable.getDeclaredField("View_scrollbars").getInt(null);
+
+            // Consider extraction successful if we made it this far
+            internalStyleableViewExtracted = true;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
@@ -303,15 +339,19 @@ public class PanView extends FrameLayout {
             e.printStackTrace();
         }
 
-        // Get styled attributes array for View
-        TypedArray styledAttrsView = getContext().getTheme().obtainStyledAttributes(attrs, internalStyleable_View, defStyleAttr, defStyleRes);
+        // If extraction was successful
+        if (internalStyleableViewExtracted) {
+            // Get styled attributes for View
+            TypedArray styledAttrsView = getContext().getTheme().obtainStyledAttributes(attrs, internalStyleableView, defStyleAttr, defStyleRes);
 
-        int scrollbars = styledAttrsView.getInteger(internalStyleable_View_scrollbars, -1);
-        System.out.println(scrollbars);
+            int scrollbars = styledAttrsView.getInteger(internalStyleableView_scrollbars, -1);
+            System.out.println(scrollbars);
 
-        styledAttrsView.recycle();
+            // Recycle styled attributes for View
+            styledAttrsView.recycle();
+        }
 
-        // Get styled attributes array for PanView
+        // Get styled attributes for PanView
         TypedArray styledAttrsPanView = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PanView, defStyleAttr, defStyleRes);
 
         fillViewportHeight = styledAttrsPanView.getBoolean(R.styleable.PanView_fillViewportHeight, fillViewportHeight);
@@ -319,6 +359,7 @@ public class PanView extends FrameLayout {
 
         useNativeSmoothScroll = styledAttrsPanView.getBoolean(R.styleable.PanView_useNativeSmoothScroll, useNativeSmoothScroll);
 
+        // Recycle styled attributes for PanView
         styledAttrsPanView.recycle();
     }
 
