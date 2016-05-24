@@ -417,6 +417,11 @@ public class PanView extends FrameLayout {
         }
     }
 
+    public void fling(int velocityX, int velocityY) {
+        scrollViewX.fling(velocityX);
+        scrollViewY.fling(velocityY);
+    }
+
     @Override
     public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
         scrollbarLens.setHorizontalScrollBarEnabled(horizontalScrollBarEnabled);
