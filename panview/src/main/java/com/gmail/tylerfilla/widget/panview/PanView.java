@@ -226,13 +226,6 @@ public class PanView extends FrameLayout {
 
         };
 
-        scrollbarLens = new ScrollbarLens(getContext());
-
-        fillViewportHeight = DEF_FILL_VIEWPORT_HEIGHT;
-        fillViewportWidth = DEF_FILL_VIEWPORT_WIDTH;
-
-        useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
-
         // Schedule scroll expiration checks (a bit hacky, but this whole thing is, too...)
         new Timer().scheduleAtFixedRate(new TimerTask() {
 
@@ -280,6 +273,17 @@ public class PanView extends FrameLayout {
             }
 
         }, 0L, 200L);
+
+        scrollbarLens = new ScrollbarLens(getContext());
+
+        fillViewportHeight = DEF_FILL_VIEWPORT_HEIGHT;
+        fillViewportWidth = DEF_FILL_VIEWPORT_WIDTH;
+
+        useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
+
+        // Disable native scrollbars
+        scrollViewX.setHorizontalScrollBarEnabled(false);
+        scrollViewY.setVerticalScrollBarEnabled(false);
     }
 
     private void handleAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -296,10 +300,6 @@ public class PanView extends FrameLayout {
     }
 
     private void configure() {
-        // Disable native scrollbars
-        scrollViewX.setHorizontalScrollBarEnabled(false);
-        scrollViewY.setVerticalScrollBarEnabled(false);
-
         // Fill viewport for each axis
         scrollViewX.setFillViewport(fillViewportWidth);
         scrollViewY.setFillViewport(fillViewportHeight);
