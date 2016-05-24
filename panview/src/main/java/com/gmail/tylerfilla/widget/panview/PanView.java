@@ -291,8 +291,6 @@ public class PanView extends FrameLayout {
 
         // Indices of relevant attributes in the above array
         int internalStyleableView_fadeScrollbars = -1;
-        int internalStyleableView_scrollX = -1;
-        int internalStyleableView_scrollY = -1;
         int internalStyleableView_scrollbarAlwaysDrawHorizontalTrack = -1;
         int internalStyleableView_scrollbarAlwaysDrawVerticalTrack = -1;
         int internalStyleableView_scrollbarDefaultDelayBeforeFade = -1;
@@ -312,11 +310,9 @@ public class PanView extends FrameLayout {
             // Get private "styleable" from android.R
             Class internalStyleable = Class.forName("android.R$styleable");
 
-            // Extract relevant data from android.R.styleable
+            // Extract relevant information from android.R.styleable
             internalStyleableView = (int[]) internalStyleable.getDeclaredField("View").get(null);
             internalStyleableView_fadeScrollbars = internalStyleable.getDeclaredField("View_fadeScrollbars").getInt(null);
-            internalStyleableView_scrollX = internalStyleable.getDeclaredField("View_scrollX").getInt(null);
-            internalStyleableView_scrollY = internalStyleable.getDeclaredField("View_scrollY").getInt(null);
             internalStyleableView_scrollbarAlwaysDrawHorizontalTrack = internalStyleable.getDeclaredField("View_scrollbarAlwaysDrawHorizontalTrack").getInt(null);
             internalStyleableView_scrollbarAlwaysDrawVerticalTrack = internalStyleable.getDeclaredField("View_scrollbarAlwaysDrawVerticalTrack").getInt(null);
             internalStyleableView_scrollbarDefaultDelayBeforeFade = internalStyleable.getDeclaredField("View_scrollbarDefaultDelayBeforeFade").getInt(null);
@@ -344,8 +340,27 @@ public class PanView extends FrameLayout {
             // Get styled attributes for View
             TypedArray styledAttrsView = getContext().getTheme().obtainStyledAttributes(attrs, internalStyleableView, defStyleAttr, defStyleRes);
 
-            int scrollbars = styledAttrsView.getInteger(internalStyleableView_scrollbars, -1);
-            System.out.println(scrollbars);
+            /* Redirect to scrollbar lens any attributes pertaining to scrollbars */
+
+            boolean fadeScrollbars = styledAttrsView.getBoolean(internalStyleableView_fadeScrollbars, scrollbarLens.isScrollbarFadingEnabled());
+            int scrollbarStyle = styledAttrsView.getInteger(internalStyleableView_scrollbarStyle, scrollbarLens.getScrollBarStyle());
+            int scrollbars = styledAttrsView.getInteger(internalStyleableView_scrollbars, (scrollbarLens.isHorizontalScrollBarEnabled() ? 0x00000100 : 0) | (scrollbarLens.isVerticalScrollBarEnabled() ? 0x00000200 : 0));
+
+            scrollbarLens.setScrollbarFadingEnabled(fadeScrollbars);
+            // noinspection WrongConstant
+            scrollbarLens.setScrollBarStyle(scrollbarStyle);
+            scrollbarLens.setHorizontalScrollBarEnabled((scrollbars & 0x00000100) > 0);
+            scrollbarLens.setVerticalScrollBarEnabled((scrollbars & 0x00000200) > 0);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                int scrollbarDefaultDelayBeforeFade = styledAttrsView.getInteger(internalStyleableView_scrollbarDefaultDelayBeforeFade, scrollbarLens.getScrollBarDefaultDelayBeforeFade());
+                int scrollbarFadeDuration = styledAttrsView.getInteger(internalStyleableView_scrollbarFadeDuration, scrollbarLens.getScrollBarFadeDuration());
+                int scrollbarSize = styledAttrsView.getDimensionPixelSize(internalStyleableView_scrollbarSize, scrollbarLens.getScrollBarSize());
+
+                scrollbarLens.setScrollBarDefaultDelayBeforeFade(scrollbarDefaultDelayBeforeFade);
+                scrollbarLens.setScrollBarFadeDuration(scrollbarFadeDuration);
+                scrollbarLens.setScrollBarSize(scrollbarSize);
+            }
 
             // Recycle styled attributes for View
             styledAttrsView.recycle();
@@ -369,12 +384,23 @@ public class PanView extends FrameLayout {
         scrollViewY.setFillViewport(fillViewportHeight);
     }
 
+    @Override
+    public boolean isScrollbarFadingEnabled() {
+        return scrollbarLens.isScrollbarFadingEnabled();
+    }
+
+    @Override
+    public void setScrollbarFadingEnabled(boolean fadeScrollbars) {
+        scrollbarLens.setScrollbarFadingEnabled(fadeScrollbars);
+    }
+
     public boolean isFillViewportWidth() {
         return fillViewportWidth;
     }
 
     public void setFillViewportWidth(boolean fillViewportWidth) {
         this.fillViewportWidth = fillViewportWidth;
+        configure();
     }
 
     public boolean isFillViewportHeight() {
@@ -383,6 +409,7 @@ public class PanView extends FrameLayout {
 
     public void setFillViewportHeight(boolean fillViewportHeight) {
         this.fillViewportHeight = fillViewportHeight;
+        configure();
     }
 
     public boolean isUseNativeSmoothScroll() {
@@ -391,6 +418,7 @@ public class PanView extends FrameLayout {
 
     public void setUseNativeSmoothScroll(boolean useNativeSmoothScroll) {
         this.useNativeSmoothScroll = useNativeSmoothScroll;
+        configure();
     }
 
     public int getPanX() {
@@ -661,10 +689,14 @@ public class PanView extends FrameLayout {
 
             // Use a transparent background, lest we forfeit our lensiness
             setBackgroundColor(0);
+
+            // Enable horizontal scrollbar by default
+            setHorizontalScrollBarEnabled(true);
         }
 
         @Override
-        public boolean awakenScrollBars() {
+        protected boolean awakenScrollBars() {
+            // Redefine to provide intra-PanView access
             return super.awakenScrollBars();
         }
 
