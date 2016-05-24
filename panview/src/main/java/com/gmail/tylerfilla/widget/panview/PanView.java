@@ -363,6 +363,14 @@ public class PanView extends FrameLayout {
         panStoppedListenerList.remove(listener);
     }
 
+    public HorizontalScrollView getScrollViewX() {
+        return scrollViewX;
+    }
+
+    public ScrollView getScrollViewY() {
+        return scrollViewY;
+    }
+
     public void panTo(int x, int y) {
         scrollViewX.scrollTo(x, scrollViewX.getScrollY());
         scrollViewY.scrollTo(scrollViewY.getScrollX(), y);
