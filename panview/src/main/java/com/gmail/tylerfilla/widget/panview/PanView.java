@@ -39,6 +39,8 @@ public class PanView extends FrameLayout {
     private HorizontalScrollView scrollViewX;
     private ScrollView scrollViewY;
 
+    private boolean spliced;
+
     private long timeLastScrollChangeX;
     private long timeLastScrollChangeY;
 
@@ -421,15 +423,83 @@ public class PanView extends FrameLayout {
     }
 
     @Override
+    public void addView(View child) {
+        // Current child count
+        int count;
+
+        // Get child count
+        if (spliced) {
+            count = scrollViewY.getChildCount();
+        } else {
+            count = getChildCount();
+        }
+
+        // Enforce one child
+        if (count != 0) {
+            throw new IllegalStateException("PanView can only host one direct child");
+        }
+
+        // Add view to appropriate parent
+        if (spliced) {
+            scrollViewY.addView(child);
+        } else {
+            super.addView(child);
+        }
+    }
+
+    @Override
+    public void addView(View child, int index) {
+        // Index can only be 0 with one child
+        if (index != 0) {
+            throw new IllegalStateException("PanView can only host one direct child (whose index must be 0)");
+        }
+
+        // Add view normally
+        addView(child);
+    }
+
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams layoutParams) {
+        // Set child layout parameters (why does this method even exist?)
+        child.setLayoutParams(layoutParams);
+
+        // Add view normally
+        addView(child);
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams layoutParams) {
+        // Index can only be 0 with one child
+        if (index != 0) {
+            throw new IllegalStateException("PanView can only host one direct child (whose index must be 0)");
+        }
+
+        // Add view normally
+        addView(child, layoutParams);
+    }
+
+    @Override
+    public void addView(View child, int width, int height) {
+        // Add view normally (establishes default layout parameters)
+        addView(child);
+
+        // Get child's layout parameters
+        ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+
+        // Set width and height (again, why is this method needed?)
+        layoutParams.width = width;
+        layoutParams.height = height;
+
+        // Set child's layout parameters
+        child.setLayoutParams(layoutParams);
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        // Enforce number of children
-        if (getChildCount() != 1) {
-            if (getChildCount() > 1) {
-                throw new IllegalStateException("PanView can only host one direct child");
-            }
-
+        // Do not continue if already spliced
+        if (spliced) {
             return;
         }
 
@@ -442,6 +512,9 @@ public class PanView extends FrameLayout {
 
         // Add scrollbar lens
         addView(scrollbarLens);
+
+        // Set spliced flag
+        spliced = true;
     }
 
     private class ScrollbarLens extends ScrollView {
