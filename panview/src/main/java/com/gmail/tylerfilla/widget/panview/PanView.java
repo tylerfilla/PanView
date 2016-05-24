@@ -346,20 +346,20 @@ public class PanView extends FrameLayout {
             int scrollbarStyle = styledAttrsView.getInteger(internalStyleableView_scrollbarStyle, scrollbarLens.getScrollBarStyle());
             int scrollbars = styledAttrsView.getInteger(internalStyleableView_scrollbars, (scrollbarLens.isHorizontalScrollBarEnabled() ? 0x00000100 : 0) | (scrollbarLens.isVerticalScrollBarEnabled() ? 0x00000200 : 0));
 
-            scrollbarLens.setScrollbarFadingEnabled(fadeScrollbars);
+            setScrollbarFadingEnabled(fadeScrollbars);
             // noinspection WrongConstant
-            scrollbarLens.setScrollBarStyle(scrollbarStyle);
-            scrollbarLens.setHorizontalScrollBarEnabled((scrollbars & 0x00000100) > 0);
-            scrollbarLens.setVerticalScrollBarEnabled((scrollbars & 0x00000200) > 0);
+            setScrollBarStyle(scrollbarStyle);
+            setHorizontalScrollBarEnabled((scrollbars & 0x00000100) > 0);
+            setVerticalScrollBarEnabled((scrollbars & 0x00000200) > 0);
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 int scrollbarDefaultDelayBeforeFade = styledAttrsView.getInteger(internalStyleableView_scrollbarDefaultDelayBeforeFade, scrollbarLens.getScrollBarDefaultDelayBeforeFade());
                 int scrollbarFadeDuration = styledAttrsView.getInteger(internalStyleableView_scrollbarFadeDuration, scrollbarLens.getScrollBarFadeDuration());
                 int scrollbarSize = styledAttrsView.getDimensionPixelSize(internalStyleableView_scrollbarSize, scrollbarLens.getScrollBarSize());
 
-                scrollbarLens.setScrollBarDefaultDelayBeforeFade(scrollbarDefaultDelayBeforeFade);
-                scrollbarLens.setScrollBarFadeDuration(scrollbarFadeDuration);
-                scrollbarLens.setScrollBarSize(scrollbarSize);
+                setScrollBarDefaultDelayBeforeFade(scrollbarDefaultDelayBeforeFade);
+                setScrollBarFadeDuration(scrollbarFadeDuration);
+                setScrollBarSize(scrollbarSize);
             }
 
             // Recycle styled attributes for View
@@ -392,6 +392,72 @@ public class PanView extends FrameLayout {
     @Override
     public void setScrollbarFadingEnabled(boolean fadeScrollbars) {
         scrollbarLens.setScrollbarFadingEnabled(fadeScrollbars);
+    }
+
+    @Override
+    public int getScrollBarStyle() {
+        return scrollbarLens.getScrollBarStyle();
+    }
+
+    @Override
+    public void setScrollBarStyle(int style) {
+        scrollbarLens.setScrollBarStyle(style);
+    }
+
+    @Override
+    public boolean isHorizontalScrollBarEnabled() {
+        return scrollbarLens.isHorizontalScrollBarEnabled();
+    }
+
+    @Override
+    public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
+        scrollbarLens.setHorizontalScrollBarEnabled(horizontalScrollBarEnabled);
+    }
+
+    @Override
+    public boolean isVerticalScrollBarEnabled() {
+        return scrollbarLens.isVerticalScrollBarEnabled();
+    }
+
+    @Override
+    public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
+        scrollbarLens.setVerticalScrollBarEnabled(verticalScrollBarEnabled);
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public int getScrollBarDefaultDelayBeforeFade() {
+        return scrollbarLens.getScrollBarDefaultDelayBeforeFade();
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void setScrollBarDefaultDelayBeforeFade(int scrollBarDefaultDelayBeforeFade) {
+        scrollbarLens.setScrollBarDefaultDelayBeforeFade(scrollBarDefaultDelayBeforeFade);
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public int getScrollBarFadeDuration() {
+        return scrollbarLens.getScrollBarFadeDuration();
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void setScrollBarFadeDuration(int scrollBarFadeDuration) {
+        scrollbarLens.setScrollBarFadeDuration(scrollBarFadeDuration);
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public int getScrollBarSize() {
+        return scrollbarLens.getScrollBarSize();
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void setScrollBarSize(int scrollBarSize) {
+        scrollbarLens.setScrollBarSize(scrollBarSize);
     }
 
     public boolean isFillViewportWidth() {
@@ -517,16 +583,6 @@ public class PanView extends FrameLayout {
     public void fling(int velocityX, int velocityY) {
         scrollViewX.fling(velocityX);
         scrollViewY.fling(velocityY);
-    }
-
-    @Override
-    public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
-        scrollbarLens.setHorizontalScrollBarEnabled(horizontalScrollBarEnabled);
-    }
-
-    @Override
-    public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
-        scrollbarLens.setVerticalScrollBarEnabled(verticalScrollBarEnabled);
     }
 
     @Override
