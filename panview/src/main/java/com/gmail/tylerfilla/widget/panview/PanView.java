@@ -89,11 +89,7 @@ public class PanView extends FrameLayout {
 
             @Override
             public boolean onInterceptTouchEvent(MotionEvent event) {
-                // If scroll has expired
-                if (System.nanoTime() - timeLastScrollChangeX > SCROLL_CHANGE_EXPIRATION) {
-                    isScrollingX = false;
-                }
-
+                // Intercept all touch events
                 return true;
             }
 
@@ -103,12 +99,12 @@ public class PanView extends FrameLayout {
                 super.onTouchEvent(event);
 
                 // Offset the touch location to account for horizontal scroll
-                event.offsetLocation(getScrollX() - getLeft(), 0f);
+                event.offsetLocation(getScrollX() - getLeft(), 0F);
 
                 // Send event to vertical scroll view
                 scrollViewY.dispatchTouchEvent(event);
 
-                // Always consider events handled
+                // Never let events propagate naturally here
                 return true;
             }
 
@@ -122,10 +118,7 @@ public class PanView extends FrameLayout {
                 // Store time of this scroll change
                 timeLastScrollChangeX = System.nanoTime();
 
-                // Tell the scrollbar view to redraw
-                scrollbarLens.postInvalidate();
-
-                // Store value for later use elsewhere
+                // Store X scroll value for later use elsewhere
                 oldScrollX = l;
 
                 // Notify listener(s)
@@ -136,7 +129,9 @@ public class PanView extends FrameLayout {
 
             @Override
             protected boolean awakenScrollBars() {
+                // Redirect to scrollbar lens
                 scrollbarLens.awakenScrollBars();
+
                 return super.awakenScrollBars();
             }
 
@@ -146,11 +141,6 @@ public class PanView extends FrameLayout {
 
             @Override
             public boolean onInterceptTouchEvent(MotionEvent event) {
-                // If scroll has expired
-                if (System.nanoTime() - timeLastScrollChangeY > SCROLL_CHANGE_EXPIRATION) {
-                    isScrollingY = false;
-                }
-
                 // If scrolling or should start scrolling, intercept the event
                 return isScrollingX || isScrollingY || super.onInterceptTouchEvent(event);
             }
@@ -165,10 +155,7 @@ public class PanView extends FrameLayout {
                 // Store time of this scroll change
                 timeLastScrollChangeY = System.nanoTime();
 
-                // Tell the scrollbar view to redraw
-                scrollbarLens.postInvalidate();
-
-                // Store value for later use elsewhere
+                // Store Y scroll value for later use elsewhere
                 oldScrollY = t;
 
                 // Notify listener(s)
@@ -238,7 +225,9 @@ public class PanView extends FrameLayout {
 
             @Override
             protected boolean awakenScrollBars() {
+                // Redirect to scrollbar lens
                 scrollbarLens.awakenScrollBars();
+
                 return super.awakenScrollBars();
             }
 
