@@ -173,10 +173,11 @@ public class PanView extends FrameLayout {
                 // Sanity check
                 if (child == null) {
                     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                    return;
                 }
 
                 // Get child layout parameters
-                MarginLayoutParams layoutParams = (MarginLayoutParams) child.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
 
                 // Flags determining alteration state of width and height params
                 boolean setWidth = false;
