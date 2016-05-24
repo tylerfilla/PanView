@@ -31,13 +31,13 @@ public class PanView extends FrameLayout {
 
     private boolean useNativeSmoothScroll;
 
-    private ScrollbarLens scrollbarLens;
-
     private List<OnPanChangedListener> panChangedListenerList;
     private List<OnPanStoppedListener> panStoppedListenerList;
 
     private HorizontalScrollView scrollViewX;
     private ScrollView scrollViewY;
+
+    private ScrollbarLens scrollbarLens;
 
     private boolean spliced;
 
@@ -79,8 +79,6 @@ public class PanView extends FrameLayout {
         fillViewportWidth = DEF_FILL_VIEWPORT_WIDTH;
 
         useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
-
-        scrollbarLens = new ScrollbarLens(getContext());
 
         panChangedListenerList = new ArrayList<>();
         panStoppedListenerList = new ArrayList<>();
@@ -233,6 +231,8 @@ public class PanView extends FrameLayout {
 
         };
 
+        scrollbarLens = new ScrollbarLens(getContext());
+
         // Schedule scroll expiration checks (a bit hacky...)
         post(new Runnable() {
 
@@ -366,6 +366,10 @@ public class PanView extends FrameLayout {
 
     public ScrollView getScrollViewY() {
         return scrollViewY;
+    }
+
+    public ScrollbarLens getScrollbarLens() {
+        return scrollbarLens;
     }
 
     public void panTo(int x, int y) {
@@ -558,6 +562,11 @@ public class PanView extends FrameLayout {
     }
 
     @Override
+    public boolean awakenScrollBars() {
+        return scrollbarLens.awakenScrollBars();
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
@@ -580,9 +589,9 @@ public class PanView extends FrameLayout {
         spliced = true;
     }
 
-    private class ScrollbarLens extends ScrollView {
+    public class ScrollbarLens extends ScrollView {
 
-        public ScrollbarLens(Context context) {
+        private ScrollbarLens(Context context) {
             super(context);
 
             // Expand to whatever we're in
