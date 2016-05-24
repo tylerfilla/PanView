@@ -14,8 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PanView extends FrameLayout {
 
@@ -31,10 +31,13 @@ public class PanView extends FrameLayout {
 
     private boolean useNativeSmoothScroll;
 
+    private ScrollbarLens scrollbarLens;
+
+    private List<OnPanChangedListener> panChangedListenerList;
+    private List<OnPanStoppedListener> panStoppedListenerList;
+
     private HorizontalScrollView scrollViewX;
     private ScrollView scrollViewY;
-
-    private ScrollbarLens scrollbarLens;
 
     private long timeLastScrollChangeX;
     private long timeLastScrollChangeY;
@@ -44,9 +47,6 @@ public class PanView extends FrameLayout {
 
     private int oldScrollX;
     private int oldScrollY;
-
-    private OnPanChangedListener panChangeListener;
-    private OnPanStoppedListener panStopListener;
 
     public PanView(Context context) {
         super(context);
@@ -73,6 +73,16 @@ public class PanView extends FrameLayout {
     }
 
     private void initialize() {
+        fillViewportHeight = DEF_FILL_VIEWPORT_HEIGHT;
+        fillViewportWidth = DEF_FILL_VIEWPORT_WIDTH;
+
+        useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
+
+        scrollbarLens = new ScrollbarLens(getContext());
+
+        panChangedListenerList = new ArrayList<>();
+        panStoppedListenerList = new ArrayList<>();
+
         scrollViewX = new HorizontalScrollView(getContext()) {
 
             @Override
@@ -119,9 +129,9 @@ public class PanView extends FrameLayout {
                 // Store value for later use elsewhere
                 oldScrollX = l;
 
-                // Notify listener
-                if (panChangeListener != null) {
-                    panChangeListener.onPanChanged(l, scrollViewY.getScrollY(), oldl, oldScrollY);
+                // Notify listener(s)
+                for (OnPanChangedListener listener : panChangedListenerList) {
+                    listener.onPanChanged(l, scrollViewY.getScrollY(), oldl, oldScrollY);
                 }
             }
 
@@ -159,9 +169,9 @@ public class PanView extends FrameLayout {
                 // Store value for later use elsewhere
                 oldScrollY = t;
 
-                // Notify listener
-                if (panChangeListener != null) {
-                    panChangeListener.onPanChanged(scrollViewX.getScrollX(), t, oldScrollX, oldt);
+                // Notify listener(s)
+                for (OnPanChangedListener listener : panChangedListenerList) {
+                    listener.onPanChanged(scrollViewX.getScrollX(), t, oldScrollX, oldt);
                 }
             }
 
@@ -226,11 +236,14 @@ public class PanView extends FrameLayout {
 
         };
 
-        // Schedule scroll expiration checks (a bit hacky, but this whole thing is, too...)
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        // Schedule scroll expiration checks (a bit hacky...)
+        post(new Runnable() {
 
             @Override
             public void run() {
+                // Whether panning has just stopped
+                boolean stopped = false;
+
                 // If X scroll has expired
                 if (isScrollingX && System.nanoTime() - timeLastScrollChangeX > SCROLL_CHANGE_EXPIRATION) {
                     isScrollingX = false;
@@ -238,16 +251,9 @@ public class PanView extends FrameLayout {
                     // Park X scroll
                     scrollViewX.scrollTo(scrollViewX.getScrollX(), scrollViewX.getScrollY());
 
-                    // If not scrolling vertically, either, and stop listener is set, notify it
-                    if (!isScrollingY && panStopListener != null) {
-                        post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                panStopListener.onPanStopped();
-                            }
-
-                        });
+                    // If not scrolling vertically, either
+                    if (!isScrollingY) {
+                        stopped = true;
                     }
                 }
 
@@ -258,28 +264,24 @@ public class PanView extends FrameLayout {
                     // Park Y scroll
                     scrollViewY.scrollTo(scrollViewY.getScrollX(), scrollViewY.getScrollY());
 
-                    // If not scrolling horizontally, either, and stop listener is set, notify it
-                    if (!isScrollingX && panStopListener != null) {
-                        post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                panStopListener.onPanStopped();
-                            }
-
-                        });
+                    // If not scrolling horizontally, either
+                    if (!isScrollingX) {
+                        stopped = true;
                     }
                 }
+
+                // Notify listeners if just stopped
+                if (stopped) {
+                    for (OnPanStoppedListener listener : panStoppedListenerList) {
+                        listener.onPanStopped();
+                    }
+                }
+
+                // Set up next iteration
+                postDelayed(this, 200L);
             }
 
-        }, 0L, 200L);
-
-        scrollbarLens = new ScrollbarLens(getContext());
-
-        fillViewportHeight = DEF_FILL_VIEWPORT_HEIGHT;
-        fillViewportWidth = DEF_FILL_VIEWPORT_WIDTH;
-
-        useNativeSmoothScroll = DEF_USE_NATIVE_SMOOTH_SCROLL;
+        });
 
         // Disable native scrollbars
         scrollViewX.setHorizontalScrollBarEnabled(false);
@@ -345,12 +347,20 @@ public class PanView extends FrameLayout {
         scrollViewY.scrollTo(scrollViewY.getScrollX(), panY);
     }
 
-    public void setOnPanChangeListener(OnPanChangedListener panChangeListener) {
-        this.panChangeListener = panChangeListener;
+    public void addOnPanChangedListener(OnPanChangedListener listener) {
+        panChangedListenerList.add(listener);
     }
 
-    public void setOnPanStopListener(OnPanStoppedListener panStopListener) {
-        this.panStopListener = panStopListener;
+    public void removeOnPanChangedListener(OnPanChangedListener listener) {
+        panChangedListenerList.remove(listener);
+    }
+
+    public void addOnPanStoppedListener(OnPanStoppedListener listener) {
+        panStoppedListenerList.add(listener);
+    }
+
+    public void removeOnPanStoppedListener(OnPanStoppedListener listener) {
+        panStoppedListenerList.remove(listener);
     }
 
     public void panTo(int x, int y) {
