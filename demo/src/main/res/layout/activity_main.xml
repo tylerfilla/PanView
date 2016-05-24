@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.gmail.tylerfilla.widget.panview.demo.MainActivity"
     style="@style/Activity.Main.Root">
 
-    <com.gmail.tylerfilla.widget.panview.PanView
-        android:id="@+id/activityMainPanView"
-        style="@style/Activity.Main.PanView">
+    <FrameLayout
+        android:id="@+id/mainPanel"
+        style="@style/Activity.Main.MainPanel">
 
-    </com.gmail.tylerfilla.widget.panview.PanView>
+        <com.gmail.tylerfilla.widget.panview.PanView
+            android:id="@+id/panView"
+            style="@style/Activity.Main.PanView">
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/sampleText"
+                style="@style/Activity.Main.SampleText" />
+
+        </com.gmail.tylerfilla.widget.panview.PanView>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/controlPanel"
+        style="@style/Activity.Main.ControlPanel">
+
+        <LinearLayout
+            style="@style/Activity.Main.ControlPanelEntry">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Word wrap" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/wordWrapSwitch"
+                style="@style/Activity.Main.WordWrapSwitch" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
