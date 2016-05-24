@@ -45,8 +45,8 @@ public class PanView extends FrameLayout {
     private int oldScrollX;
     private int oldScrollY;
 
-    private OnPanChangeListener panChangeListener;
-    private OnPanStopListener panStopListener;
+    private OnPanChangedListener panChangeListener;
+    private OnPanStoppedListener panStopListener;
 
     public PanView(Context context) {
         super(context);
@@ -118,7 +118,7 @@ public class PanView extends FrameLayout {
 
                 // Notify listener
                 if (panChangeListener != null) {
-                    panChangeListener.onPanChange(l, scrollViewY.getScrollY(), oldl, oldScrollY);
+                    panChangeListener.onPanChanged(l, scrollViewY.getScrollY(), oldl, oldScrollY);
                 }
 
                 // Store value for later use elsewhere
@@ -158,7 +158,7 @@ public class PanView extends FrameLayout {
 
                 // Notify listener
                 if (panChangeListener != null) {
-                    panChangeListener.onPanChange(scrollViewX.getScrollX(), t, oldScrollX, oldt);
+                    panChangeListener.onPanChanged(scrollViewX.getScrollX(), t, oldScrollX, oldt);
                 }
 
                 // Store value for later use elsewhere
@@ -244,7 +244,7 @@ public class PanView extends FrameLayout {
 
                             @Override
                             public void run() {
-                                panStopListener.onPanStop();
+                                panStopListener.onPanStopped();
                             }
 
                         });
@@ -264,7 +264,7 @@ public class PanView extends FrameLayout {
 
                             @Override
                             public void run() {
-                                panStopListener.onPanStop();
+                                panStopListener.onPanStopped();
                             }
 
                         });
@@ -345,11 +345,11 @@ public class PanView extends FrameLayout {
         scrollViewY.scrollTo(scrollViewY.getScrollX(), panY);
     }
 
-    public void setOnPanChangeListener(OnPanChangeListener panChangeListener) {
+    public void setOnPanChangeListener(OnPanChangedListener panChangeListener) {
         this.panChangeListener = panChangeListener;
     }
 
-    public void setOnPanStopListener(OnPanStopListener panStopListener) {
+    public void setOnPanStopListener(OnPanStoppedListener panStopListener) {
         this.panStopListener = panStopListener;
     }
 
