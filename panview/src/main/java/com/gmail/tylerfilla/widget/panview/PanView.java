@@ -219,6 +219,21 @@ public class PanView extends FrameLayout {
 
                 // Update child layout parameters after restoring
                 child.setLayoutParams(layoutParams);
+
+                // If should fill viewport width, but is currently too small
+                if (fillViewportWidth && child.getMeasuredWidth() < PanView.this.getMeasuredWidth()) {
+                    int old = layoutParams.width;
+
+                    layoutParams.width = PanView.this.getMeasuredWidth();
+
+                    child.setLayoutParams(layoutParams);
+
+                    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+                    layoutParams.width = old;
+
+                    child.setLayoutParams(layoutParams);
+                }
             }
 
             @Override
