@@ -40,7 +40,7 @@ dependencies {
 }
 ```
 
-Obviously you can select the version to use by modifying the above line.
+You can select the version to use by modifying the above line.
 
 As far as actually using the library in your application, it's really simple. Use the PanView class just as you would a ScrollView. See the included demo app as an example. Here are the relevant files:
 
