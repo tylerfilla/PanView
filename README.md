@@ -36,7 +36,7 @@ Once that's done, include PanView in a module-level `build.gradle` like this:
 ```gradle
 dependencies {
     // Add the following line
-    compile 'com.github.tylerfilla:PanView:v0.0.0'
+    compile 'com.github.tylerfilla:PanView:0.0.1'
 }
 ```
 
