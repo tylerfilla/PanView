@@ -26,13 +26,12 @@
         style="@style/Activity.Main.ControlPanel">
 
         <LinearLayout
+            tools:ignore="UselessParent"
             style="@style/Activity.Main.ControlPanelEntry">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="Word wrap" />
+                android:text="@string/control_panel_info_text_word_wrap"
+                style="@style/Activity.Main.ControlPanelEntryInfo" />
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/wordWrapSwitch"

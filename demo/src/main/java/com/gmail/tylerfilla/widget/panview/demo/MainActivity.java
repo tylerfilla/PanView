@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         wordWrapSwitch = (SwitchCompat) findViewById(R.id.wordWrapSwitch);
 
         // Set sample text
-        sampleText.setText(Html.fromHtml(getString(R.string.sample_text_1)));
+        sampleText.setText(Html.fromHtml(getString(R.string.sample_text)));
 
         // Listen for word wrap switch toggles
         wordWrapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -43,14 +43,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setWordWrap(boolean wordWrap) {
+        // Get current layout parameters
         ViewGroup.LayoutParams layoutParams = sampleText.getLayoutParams();
 
         if (wordWrap) {
+            // Remove the need to scroll horizontally
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         } else {
+            // Make it wide enough to demonstrate panning
             layoutParams.width = 2 * panView.getWidth();
         }
 
+        // Set new layout parameters
         sampleText.setLayoutParams(layoutParams);
     }
 

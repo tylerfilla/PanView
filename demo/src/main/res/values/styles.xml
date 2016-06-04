@@ -40,15 +40,16 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
+    <style name="Activity.Main.ControlPanelEntryInfo" parent="">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="Activity.Main.WordWrapSwitch" parent="">
         <item name="android:checked">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-    </style>
-
-    <style name="Activity.Main.WrapColumnSeekBar" parent="">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
