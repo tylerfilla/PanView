@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -734,6 +736,41 @@ public class PanView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        // Splice views
+        splice();
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        // Create a stateful object based on super state
+        SavedState savedState = new SavedState(super.onSaveInstanceState());
+
+        // Save pan position
+        savedState.panX = getPanX();
+        savedState.panY = getPanY();
+
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        // Check if state is ours
+        if (state instanceof SavedState) {
+            SavedState savedState = (SavedState) state;
+
+            // Pass on super state
+            super.onRestoreInstanceState(savedState.getSuperState());
+
+            // Restore pan position
+            setPanX(savedState.panX);
+            setPanY(savedState.panY);
+        } else {
+            // Not for us, pass it on
+            super.onRestoreInstanceState(state);
+        }
+    }
+
+    private void splice() {
         // Do not continue if already spliced
         if (spliced) {
             return;
@@ -751,6 +788,48 @@ public class PanView extends FrameLayout {
 
         // Set spliced flag
         spliced = true;
+    }
+
+    private class SavedState extends BaseSavedState {
+
+        private int panX;
+        private int panY;
+
+        public SavedState(Parcel source) {
+            super(source);
+
+            // Read pan position
+            panX = source.readInt();
+            panY = source.readInt();
+        }
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+
+            // Write pan position
+            out.writeInt(panX);
+            out.writeInt(panY);
+        }
+
+        private final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+
+            @Override
+            public SavedState createFromParcel(Parcel source) {
+                return new SavedState(source);
+            }
+
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+
+        };
+
     }
 
     public class ScrollbarLens extends ScrollView {
