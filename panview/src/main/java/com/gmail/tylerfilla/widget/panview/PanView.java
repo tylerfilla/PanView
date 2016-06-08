@@ -745,7 +745,9 @@ public class PanView extends FrameLayout {
         // Create a stateful object based on super state
         SavedState savedState = new SavedState(super.onSaveInstanceState());
 
-        // TODO: Save stuff
+        // Save pan position
+        savedState.panX = getPanX();
+        savedState.panY = getPanY();
 
         return savedState;
     }
@@ -759,7 +761,9 @@ public class PanView extends FrameLayout {
             // Pass on super state
             super.onRestoreInstanceState(savedState.getSuperState());
 
-            // TODO: Read stuff
+            // Restore pan position
+            setPanX(savedState.panX);
+            setPanY(savedState.panY);
         } else {
             // Not for us, pass it on
             super.onRestoreInstanceState(state);
@@ -788,14 +792,28 @@ public class PanView extends FrameLayout {
 
     private class SavedState extends BaseSavedState {
 
+        private int panX;
+        private int panY;
+
         public SavedState(Parcel source) {
             super(source);
 
-            // TODO: Read from parcel
+            // Read pan position
+            panX = source.readInt();
+            panY = source.readInt();
         }
 
         public SavedState(Parcelable superState) {
             super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+
+            // Write pan position
+            out.writeInt(panX);
+            out.writeInt(panY);
         }
 
         private final Creator<SavedState> CREATOR = new Creator<SavedState>() {
