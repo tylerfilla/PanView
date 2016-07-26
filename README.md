@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/tylerfilla/PanView.svg?branch=master)](https://travis-ci.org/tylerfilla/PanView)
 
-A bidirectional panning container for Android with native scrolling.
+A bidirectional panning container for Android with native scrolling for APIs 7 and up.
 
 What is it?
 -----------
