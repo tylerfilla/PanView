@@ -1,4 +1,7 @@
 # PanView
+
+[![Build Status](https://travis-ci.org/tylerfilla/PanView.svg?branch=master)](https://travis-ci.org/tylerfilla/PanView)
+
 A bidirectional panning container for Android with native scrolling.
 
 What is it?
@@ -58,7 +61,6 @@ What I plan to do:
 
 What I do not plan to do:
 
-* Utilize a formal testing or build system
 * Release updates on a scheduled basis
 
 License
