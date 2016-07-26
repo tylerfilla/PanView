@@ -21,7 +21,7 @@ import java.util.List;
 
 public class PanView extends FrameLayout {
 
-    private static final long SCROLL_CHANGE_EXPIRATION = 200000000L;
+    private static final long SCROLL_CHANGE_EXPIRATION = 200000000l;
 
     private static final boolean DEF_FILL_VIEWPORT_HEIGHT = false;
     private static final boolean DEF_FILL_VIEWPORT_WIDTH = false;
@@ -99,7 +99,7 @@ public class PanView extends FrameLayout {
                 super.onTouchEvent(event);
 
                 // Offset the touch location to account for horizontal scroll
-                event.offsetLocation(getScrollX() - getLeft(), 0F);
+                event.offsetLocation(getScrollX() - getLeft(), 0f);
 
                 // Send event to vertical scroll view
                 scrollViewY.dispatchTouchEvent(event);
@@ -292,7 +292,7 @@ public class PanView extends FrameLayout {
                 }
 
                 // Set up next iteration
-                postDelayed(this, 200L);
+                postDelayed(this, 200l);
             }
 
         });
