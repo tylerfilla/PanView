@@ -790,6 +790,18 @@ public class PanView extends FrameLayout {
         spliced = true;
     }
 
+    public interface OnPanChangedListener {
+
+        void onPanChanged(int l, int t, int oldl, int oldt);
+
+    }
+
+    public interface OnPanStoppedListener {
+
+        void onPanStopped();
+
+    }
+
     private class SavedState extends BaseSavedState {
 
         private int panX;
